@@ -6,7 +6,7 @@ metadata:
   name: snappass
   namespace: tools
 spec:
-  hostnames: ["snappass.${SECRET_DOMAIN}"]
+  hostnames: ["snappass.coopernetes.com"]
   parentRefs:
     - name: external
       namespace: kube-system
