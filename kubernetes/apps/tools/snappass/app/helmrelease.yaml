@@ -25,15 +25,7 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
-  values:
-    route:
-      snappass:
-        hostnames: ["snappass.coopernetes.com"]
-        parentRefs:
-          - name: external
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - identifier: snappass
-                port: 5000
+  dependsOn:
+    - name: cloudflare-tunnel
+      namespace: network
+  values: {}
