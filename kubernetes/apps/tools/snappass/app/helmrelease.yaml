@@ -9,10 +9,9 @@ spec:
   interval: 30m
   chart:
     spec:
-      chart: snappass
-      version: 0.9.4
+      chart: ./charts/snappass
       sourceRef:
-        kind: HelmRepository
+        kind: GitRepository
         name: snappass
         namespace: flux-system
   maxHistory: 2
