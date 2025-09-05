@@ -2,6 +2,8 @@ machine:
   kubelet:
     extraConfig:
       serializeImagePulls: false
+    extraArgs:
+      cloud-provider: external
     nodeIP:
       validSubnets:
         - 192.168.100.0/24
