@@ -6,4 +6,3 @@ resources:
   - ./secret.sops.yaml
   - ./ocirepository.yaml
   - ./helmrelease.yaml
-  - ./node-labels-job.yaml
