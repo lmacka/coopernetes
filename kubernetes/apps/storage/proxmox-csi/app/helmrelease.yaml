@@ -1,0 +1,49 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: proxmox-csi
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: proxmox-csi-plugin
+      version: 0.13.0
+      sourceRef:
+        kind: HelmRepository
+        name: proxmox-csi
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    # Node plugin configuration
+    nodePlugin:
+      nodeSelector: {}
+      tolerations: []
+      resources: {}
+      extraArgs:
+        - "--node-id=$(NODE_NAME)"  # Use Kubernetes node name directly
+
+    # Controller plugin configuration
+    controllerPlugin:
+      nodeSelector: {}
+      tolerations: []
+      resources: {}
+
+    # Storage configuration
+    storageClass: []  # We'll create our own StorageClass separately
+
+    # Config secret reference
+    config:
+      existingSecret: proxmox-csi-secret
+
+    # Node labels to use for node selection
+    # This ensures the CSI plugin uses the correct node names
+    nodeSelector:
+      kubernetes.io/os: linux
