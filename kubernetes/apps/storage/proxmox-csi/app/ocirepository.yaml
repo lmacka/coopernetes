@@ -3,9 +3,9 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
-  name: proxmox-csi
+  name: proxmox-csi-plugin
 spec:
   interval: 1h
-  url: oci://ghcr.io/sergelogvinov/charts
+  url: oci://ghcr.io/sergelogvinov/charts/proxmox-csi-plugin
   ref:
-    tag: proxmox-csi-plugin-0.3.14
+    tag: "0.3.14"

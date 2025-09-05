@@ -8,8 +8,7 @@ spec:
   interval: 30m
   chartRef:
     kind: OCIRepository
-    name: proxmox-csi
-    namespace: flux-system
+    name: proxmox-csi-plugin
   install:
     createNamespace: true
     remediation:
@@ -19,17 +18,26 @@ spec:
     remediation:
       retries: 3
   values:
-    # Talos Linux specific configuration
+    # Reference to existing secret containing Proxmox config
+    existingConfigSecret: proxmox-csi-secret
+    existingConfigSecretKey: config.yaml
+
+    # Node plugin configuration
     node:
       nodeSelector:
         node.cloudprovider.kubernetes.io/platform: nocloud
       tolerations:
         - operator: Exists
-    nodeSelector:
-      node-role.kubernetes.io/control-plane: ""
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        effect: NoSchedule
+
+    # Controller configuration for Talos
+    controller:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+
+    # Storage class configuration
     storageClass:
       - name: local-lvm
         storage: data
