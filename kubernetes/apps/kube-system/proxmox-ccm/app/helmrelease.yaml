@@ -9,7 +9,6 @@ spec:
   chartRef:
     kind: OCIRepository
     name: proxmox-ccm
-    namespace: storage
   install:
     createNamespace: true
     remediation:
