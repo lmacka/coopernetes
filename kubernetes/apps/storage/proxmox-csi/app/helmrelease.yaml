@@ -23,11 +23,11 @@ spec:
     existingConfigSecretKey: config.yaml
 
     # Node plugin configuration
-    # node:
-    #   nodeSelector:
-    #     node.cloudprovider.kubernetes.io/platform: nocloud
-    #   tolerations:
-    #     - operator: Exists
+    node:
+      nodeSelector:
+        node.cloudprovider.kubernetes.io/platform: nocloud
+      tolerations:
+        - operator: Exists
 
     # Controller configuration for Talos
     controller:
