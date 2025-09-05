@@ -1,0 +1,42 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: proxmox-ccm
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: proxmox-ccm
+    namespace: storage
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    # Reference to existing secret containing Proxmox config
+    existingConfigSecret: proxmox-ccm-secret
+    existingConfigSecretKey: config.yaml
+
+    logVerbosityLevel: 4
+
+    enabledControllers:
+      - cloud-node
+      - cloud-node-lifecycle
+
+    # Deploy CCM only on control-plane nodes
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: node-role.kubernetes.io/control-plane
+              operator: Exists
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
