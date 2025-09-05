@@ -14,7 +14,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: synology-csi-talos
-        namespace: flux-system
+        namespace: storage
   maxHistory: 2
   install:
     createNamespace: true
