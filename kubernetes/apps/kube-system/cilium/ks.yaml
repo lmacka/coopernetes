@@ -13,6 +13,9 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
+  dependsOn:
+    - name: proxmox-ccm
+      namespace: kube-system
   interval: 1h
   path: ./kubernetes/apps/kube-system/cilium/app
   postBuild:
@@ -46,7 +49,7 @@ spec:
   dependsOn:
     - name: cert-manager
       namespace: cert-manager
-    - name: proxmox-ccm
+    - name: cilium
       namespace: kube-system
   interval: 1h
   path: ./kubernetes/apps/kube-system/cilium/gateway

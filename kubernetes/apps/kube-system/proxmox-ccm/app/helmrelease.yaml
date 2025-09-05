@@ -29,6 +29,9 @@ spec:
       - cloud-node
       - cloud-node-lifecycle
 
+    # Use host network to work before CNI is available
+    hostNetwork: true
+
     # Deploy CCM only on control-plane nodes
     affinity:
       nodeAffinity:
