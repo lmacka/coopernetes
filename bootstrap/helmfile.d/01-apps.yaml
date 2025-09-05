@@ -7,11 +7,20 @@ helmDefaults:
   waitForJobs: true
 
 releases:
+  - name: proxmox-ccm
+    namespace: kube-system
+    chart: oci://ghcr.io/sergelogvinov/charts/proxmox-cloud-controller-manager
+    version: 0.2.16
+    values: 
+      - './templates/values.yaml.gotmpl'
+      - './templates/proxmox-ccm-secret.yaml.gotmpl'
+
   - name: cilium
     namespace: kube-system
     chart: oci://ghcr.io/home-operations/charts-mirror/cilium
     version: 1.18.1
     values: ['./templates/values.yaml.gotmpl']
+    needs: ['kube-system/proxmox-ccm']
 
   - name: coredns
     namespace: kube-system

@@ -29,9 +29,6 @@ spec:
       - cloud-node
       - cloud-node-lifecycle
 
-    # Use host network to work before CNI is available
-    hostNetwork: true
-
     # Deploy CCM only on control-plane nodes
     affinity:
       nodeAffinity:
@@ -42,4 +39,7 @@ spec:
               operator: Exists
     tolerations:
       - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+      - key: node.cloudprovider.kubernetes.io/uninitialized
+        value: "true"
         effect: NoSchedule
