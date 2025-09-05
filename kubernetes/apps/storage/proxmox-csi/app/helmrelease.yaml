@@ -22,13 +22,6 @@ spec:
     existingConfigSecret: proxmox-csi-secret
     existingConfigSecretKey: config.yaml
 
-    # Node plugin configuration
-    node:
-      nodeSelector:
-        node.cloudprovider.kubernetes.io/platform: nocloud
-      tolerations:
-        - operator: Exists
-
     # Controller configuration for Talos
     controller:
       nodeSelector:
@@ -40,13 +33,8 @@ spec:
     # Storage class configuration
     storageClass:
       - name: local-lvm
-        storage: data
+        storage: local-lvm
         reclaimPolicy: Delete
         fstype: ext4
         ssd: true
         cache: writethrough
-        extraParameters:
-          csi.storage.k8s.io/node-stage-secret-name: "proxmox-csi-secret"
-          csi.storage.k8s.io/node-stage-secret-namespace: "storage"
-          csi.storage.k8s.io/node-expand-secret-name: "proxmox-csi-secret"
-          csi.storage.k8s.io/node-expand-secret-namespace: "storage"

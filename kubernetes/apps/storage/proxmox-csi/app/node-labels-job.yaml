@@ -1,0 +1,65 @@
+---
+# Job to label nodes with Proxmox topology information
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: proxmox-csi-node-labeler-v2
+  namespace: storage
+spec:
+  template:
+    spec:
+      serviceAccountName: proxmox-csi-node-labeler
+      restartPolicy: OnFailure
+      containers:
+      - name: labeler
+        image: bitnami/kubectl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Labeling nodes for Proxmox CSI..."
+          
+          # Label all nodes with the region (Proxmox cluster name)
+          kubectl label nodes --all topology.kubernetes.io/region=pve --overwrite
+          
+          # Label talos01 with its Proxmox host zone and set provider ID
+          kubectl label node talos01 topology.kubernetes.io/zone=pve02 --overwrite
+          kubectl patch node talos01 -p '{"spec":{"providerID":"proxmox://pve/201"}}'
+          
+          # Label talos02 with its Proxmox host zone and set provider ID  
+          kubectl label node talos02 topology.kubernetes.io/zone=pve01 --overwrite
+          kubectl patch node talos02 -p '{"spec":{"providerID":"proxmox://pve/202"}}'
+          
+          echo "Node labeling and provider ID setup complete!"
+          kubectl get nodes -o custom-columns=NAME:.metadata.name,REGION:.metadata.labels.topology\\.kubernetes\\.io/region,ZONE:.metadata.labels.topology\\.kubernetes\\.io/zone,PROVIDER-ID:.spec.providerID
+---
+# ServiceAccount for the labeler job
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxmox-csi-node-labeler
+  namespace: storage
+---
+# ClusterRole to allow node labeling
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: proxmox-csi-node-labeler
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  verbs: ["get", "list", "patch", "update"]
+---
+# ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: proxmox-csi-node-labeler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: proxmox-csi-node-labeler
+subjects:
+- kind: ServiceAccount
+  name: proxmox-csi-node-labeler
+  namespace: storage
