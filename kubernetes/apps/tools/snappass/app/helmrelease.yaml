@@ -4,21 +4,20 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: snappass
-  namespace: tools
 spec:
-  interval: 30m
+  interval: 1h
   chart:
     spec:
       chart: ./charts/snappass
       sourceRef:
         kind: GitRepository
         name: snappass
-        namespace: flux-system
+        namespace: tools
   maxHistory: 2
   install:
     createNamespace: true
     remediation:
-      retries: 3  
+      retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:

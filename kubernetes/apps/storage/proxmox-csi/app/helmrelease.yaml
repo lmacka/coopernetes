@@ -9,6 +9,7 @@ spec:
   chartRef:
     kind: OCIRepository
     name: proxmox-csi-plugin
+    namespace: storage
   install:
     createNamespace: true
     remediation:
