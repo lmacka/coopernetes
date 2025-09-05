@@ -8,4 +8,4 @@ spec:
   interval: 1h
   url: oci://ghcr.io/sergelogvinov/charts/proxmox-cloud-controller-manager
   ref:
-    tag: "0.10.0"
+    tag: "0.2.16"
