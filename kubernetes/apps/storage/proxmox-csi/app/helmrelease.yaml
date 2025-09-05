@@ -6,13 +6,10 @@ metadata:
   name: proxmox-csi
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: proxmox-csi-plugin
-      version: 0.3.14
-      sourceRef:
-        kind: HelmRepository
-        name: proxmox-csi
+  chartRef:
+    kind: OCIRepository
+    name: proxmox-csi
+    namespace: flux-system
   install:
     createNamespace: true
     remediation:
@@ -22,28 +19,26 @@ spec:
     remediation:
       retries: 3
   values:
-    # Node plugin configuration
-    nodePlugin:
-      nodeSelector: {}
-      tolerations: []
-      resources: {}
-      extraArgs:
-        - "--node-id=$(NODE_NAME)"  # Use Kubernetes node name directly
-
-    # Controller plugin configuration
-    controllerPlugin:
-      nodeSelector: {}
-      tolerations: []
-      resources: {}
-
-    # Storage configuration
-    storageClass: []  # We'll create our own StorageClass separately
-
-    # Config secret reference
-    config:
-      existingSecret: proxmox-csi-secret
-
-    # Node labels to use for node selection
-    # This ensures the CSI plugin uses the correct node names
+    # Talos Linux specific configuration
+    node:
+      nodeSelector:
+        node.cloudprovider.kubernetes.io/platform: nocloud
+      tolerations:
+        - operator: Exists
     nodeSelector:
-      kubernetes.io/os: linux
+      node-role.kubernetes.io/control-plane: ""
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        effect: NoSchedule
+    storageClass:
+      - name: local-lvm
+        storage: data
+        reclaimPolicy: Delete
+        fstype: ext4
+        ssd: true
+        cache: writethrough
+        extraParameters:
+          csi.storage.k8s.io/node-stage-secret-name: "proxmox-csi-secret"
+          csi.storage.k8s.io/node-stage-secret-namespace: "storage"
+          csi.storage.k8s.io/node-expand-secret-name: "proxmox-csi-secret"
+          csi.storage.k8s.io/node-expand-secret-namespace: "storage"
