@@ -1,0 +1,10 @@
+- op: add
+  path: /machine/registries
+  value:
+    mirrors:
+      registry.omacks.com:
+        endpoints:
+          - https://registry.omacks.com
+    config:
+      registry.omacks.com:
+        tls: {}
