@@ -12,3 +12,4 @@ resources:
   - ./proxmox-ccm/ks.yaml
   - ./reloader/ks.yaml
   - ./spegel/ks.yaml
+  - ./intel-gpu/ks.yaml
